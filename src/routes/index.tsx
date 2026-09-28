@@ -1,24 +1,34 @@
+import { useCallback, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/Hero";
+import { ProductGrid } from "@/components/ProductGrid";
+import { ProductDetails } from "@/components/ProductDetails";
+import { Features } from "@/components/Features";
+import { About } from "@/components/About";
+import { Contact } from "@/components/Contact";
+import { Footer } from "@/components/Footer";
+import type { Product } from "@/data/products";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({ meta: [
+    { title: "عبدالعزيز بن خليفة الزريق لنظارات | نظارات طبية وشمسية" },
+    { name: "description", content: "تسوق تشكيلة مختارة من النظارات الطبية والشمسية في متجر عبدالعزيز بن خليفة الزريق لنظارات." },
+    { property: "og:title", content: "عبدالعزيز بن خليفة الزريق لنظارات" },
+    { property: "og:description", content: "نظارات طبية وشمسية تجمع الراحة والأناقة في كل تفصيل." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ] }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
+  const [selected, setSelected] = useState<Product | null>(null);
+  const closeDetails = useCallback(() => setSelected(null), []);
+  return <>
+    <Navbar />
+    <main><Hero /><ProductGrid onDetails={setSelected} /><Features /><About /><Contact /></main>
+    <Footer />
+    <ProductDetails product={selected} onClose={closeDetails} />
+  </>;
 }
